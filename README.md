@@ -62,3 +62,25 @@ When TIDAL rate-limits a request, the script follows Retry-After when supplied
 and retries up to three times. If a swap batch stops, rerun the same approved
 preview after the cooldown. The new run reads the current collection and checks
 that a replacement is saved before removing its original.
+
+## Sync a chronological playlist
+
+```sh
+python3 tidal_chronological.py
+```
+
+The script creates an unlisted playlist named **All of my songs chronologically**
+from My Collection → Tracks. Rerun it whenever your collection changes. It
+updates the owned playlist with that exact name in place, removes entries that
+are no longer saved, and verifies the resulting order. Use
+`python3 tidal_chronological.py --dry-run` to see the order without playlist edits.
+
+TIDAL's public API exposes album release dates. The script uses the earliest
+catalog date among the saved track's linked releases and other releases found
+for its ISRC (recording identifier). This is an estimate of the original release
+date and can reflect a reissue when earlier releases are missing from TIDAL.
+Undated tracks go last. The script reports saved tracks that TIDAL omits from
+the playlist and exits with an error if the sync is incomplete.
+
+The first sync may prompt for TIDAL authorization with `collection.read`,
+`playlists.read`, and `playlists.write`.
